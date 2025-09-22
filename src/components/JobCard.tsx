@@ -1,8 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, DollarSign, Briefcase } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { MapPin, Clock, DollarSign } from "lucide-react";
 
 interface Job {
   id: string;
@@ -15,7 +14,6 @@ interface Job {
   experience_level: string | null;
   skills: string[] | null;
   posted_date: string;
-  is_active: boolean;
 }
 
 interface JobCardProps {
@@ -23,74 +21,64 @@ interface JobCardProps {
 }
 
 export const JobCard = ({ job }: JobCardProps) => {
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - date.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 1) return "1 day ago";
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays < 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
+    return `${Math.ceil(diffDays / 30)} months ago`;
+  };
+
   return (
-    <Card className="h-full hover:shadow-lg transition-shadow">
-      <CardHeader className="pb-3">
+    <Card className="hover:shadow-md transition-shadow">
+      <CardHeader>
         <div className="flex justify-between items-start">
           <div>
-            <CardTitle className="text-lg font-semibold text-foreground">{job.title}</CardTitle>
-            <p className="text-sm text-muted-foreground font-medium">{job.company}</p>
+            <CardTitle className="text-lg mb-1">{job.title}</CardTitle>
+            <p className="text-muted-foreground font-medium">{job.company}</p>
           </div>
-          {!job.is_active && (
-            <Badge variant="secondary" className="text-xs">
-              Inactive
-            </Badge>
-          )}
+          <Badge variant="secondary">{job.job_type}</Badge>
         </div>
       </CardHeader>
-
-      <CardContent className="space-y-4">
-        {job.description && (
-          <p className="text-sm text-muted-foreground line-clamp-3">
-            {job.description}
-          </p>
-        )}
-
-        <div className="space-y-2">
+      <CardContent>
+        <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+          {job.description}
+        </p>
+        
+        <div className="flex flex-wrap gap-2 mb-4">
+          {job.skills?.map((skill, index) => (
+            <Badge key={index} variant="outline" className="text-xs">
+              {skill}
+            </Badge>
+          ))}
+        </div>
+        
+        <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-4">
           {job.location && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-1">
               <MapPin className="h-4 w-4" />
-              <span>{job.location}</span>
+              {job.location}
             </div>
           )}
-
           {job.salary_range && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-1">
               <DollarSign className="h-4 w-4" />
-              <span>{job.salary_range}</span>
+              {job.salary_range}
             </div>
           )}
-
-          {job.job_type && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Briefcase className="h-4 w-4" />
-              <span className="capitalize">{job.job_type.replace('-', ' ')}</span>
-            </div>
-          )}
-
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Calendar className="h-4 w-4" />
-            <span>Posted {formatDistanceToNow(new Date(job.posted_date))} ago</span>
+          <div className="flex items-center gap-1">
+            <Clock className="h-4 w-4" />
+            {formatDate(job.posted_date)}
           </div>
         </div>
-
-        {job.skills && job.skills.length > 0 && (
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-foreground">Skills:</p>
-            <div className="flex flex-wrap gap-1">
-              {job.skills.map((skill, index) => (
-                <Badge key={index} variant="outline" className="text-xs">
-                  {skill}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div className="pt-2">
-          <Button className="w-full" disabled={!job.is_active}>
-            {job.is_active ? 'Apply Now' : 'Position Closed'}
-          </Button>
+        
+        <div className="flex gap-2">
+          <Button className="flex-1">Apply Now</Button>
+          <Button variant="outline">Save</Button>
         </div>
       </CardContent>
     </Card>

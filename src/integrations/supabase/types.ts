@@ -29,6 +29,57 @@ export type Database = {
         }
         Relationships: []
       }
+      jobs: {
+        Row: {
+          application_deadline: string | null
+          company: string
+          created_at: string
+          description: string | null
+          experience_level: string | null
+          id: string
+          is_active: boolean
+          job_type: string | null
+          location: string | null
+          posted_date: string
+          salary_range: string | null
+          skills: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          application_deadline?: string | null
+          company: string
+          created_at?: string
+          description?: string | null
+          experience_level?: string | null
+          id?: string
+          is_active?: boolean
+          job_type?: string | null
+          location?: string | null
+          posted_date?: string
+          salary_range?: string | null
+          skills?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          application_deadline?: string | null
+          company?: string
+          created_at?: string
+          description?: string | null
+          experience_level?: string | null
+          id?: string
+          is_active?: boolean
+          job_type?: string | null
+          location?: string | null
+          posted_date?: string
+          salary_range?: string | null
+          skills?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
